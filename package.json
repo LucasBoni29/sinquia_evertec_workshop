@@ -1,0 +1,43 @@
+{
+  "name": "sinquia-evertec-workshop",
+  "version": "1.0.0",
+  "description": "Workshop Sinquia Evertec - Aplicação Verificador da Qualidade do Ar",
+  "main": "air-quality-app/index.html",
+  "scripts": {
+    "start": "cd air-quality-app && python -m http.server 8000",
+    "test": "npx playwright test",
+    "lint": "npx eslint air-quality-app/script.js",
+    "lint:css": "npx stylelint air-quality-app/styles.css",
+    "lint:html": "npx html-validate air-quality-app/index.html",
+    "validate": "npm run lint:html && npm run lint:css && npm run lint",
+    "build": "mkdir -p dist && cp -r air-quality-app/* dist/",
+    "serve": "cd dist && python -m http.server 8080"
+  },
+  "keywords": [
+    "air-quality",
+    "weather",
+    "javascript",
+    "html",
+    "css",
+    "workshop",
+    "sinquia",
+    "evertec"
+  ],
+  "author": "Sinquia Evertec Workshop",
+  "license": "MIT",
+  "devDependencies": {
+    "@playwright/test": "^1.54.0",
+    "eslint": "^8.57.0",
+    "html-validate": "^8.0.0",
+    "stylelint": "^16.0.0",
+    "stylelint-config-standard": "^36.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/LucasBoni29/sinquia_evertec_workshop.git"
+  },
+  "homepage": "https://lucasboni29.github.io/sinquia_evertec_workshop/"
+}

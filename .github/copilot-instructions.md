@@ -5,7 +5,7 @@ Add a .gitignore when adding new code, update .gitignore when you add/change new
 ## GitHub Repo Information
 
 This repo is hosted in GitHub:
-- owner: octocaio
+- owner: LucasBoni29
 - repo: sinquia_evertec_workshop
 
 # Sinquia Evertec offices

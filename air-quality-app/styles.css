@@ -1,0 +1,629 @@
+/* Reset básico e estilos globais */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header */
+header {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: white;
+}
+
+header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+header p {
+    font-size: 1.2rem;
+    opacity: 0.9;
+}
+
+/* Main content */
+main {
+    flex: 1;
+    background: white;
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* Formulário */
+.location-form {
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: #555;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.form-group input.error,
+.form-group select.error {
+    border-color: #e74c3c;
+    box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+}
+
+.error-message {
+    display: block;
+    color: #e74c3c;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    min-height: 1.2rem;
+}
+
+/* Botões */
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 2rem;
+}
+
+.btn-primary,
+.btn-secondary {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 140px;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.btn-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.btn-secondary {
+    background: #f8f9fa;
+    color: #6c757d;
+    border: 2px solid #e9ecef;
+}
+
+.btn-secondary:hover {
+    background: #e9ecef;
+    border-color: #dee2e6;
+}
+
+/* Loading indicator */
+.loading {
+    text-align: center;
+    padding: 2rem;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    margin: 0 auto 1rem;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #667eea;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loading-steps {
+    margin-top: 1.5rem;
+    text-align: left;
+    max-width: 300px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.step {
+    padding: 0.5rem 0;
+    color: #6c757d;
+    font-size: 0.9rem;
+    opacity: 0.6;
+    transition: opacity 0.3s ease, color 0.3s ease;
+}
+
+.step.active {
+    color: #667eea;
+    opacity: 1;
+    font-weight: 600;
+}
+
+.step.completed {
+    color: #28a745;
+    opacity: 1;
+}
+
+.step.completed::before {
+    content: "✓ ";
+    font-weight: bold;
+}
+
+/* Resultados */
+.results {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border-left: 4px solid #667eea;
+}
+
+.results h3 {
+    color: #667eea;
+    margin-bottom: 1rem;
+}
+
+/* Estilos para resultados de qualidade do ar */
+.air-quality-results {
+    padding: 0;
+}
+
+.location-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #e9ecef;
+}
+
+.location-header h3 {
+    color: #333;
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.coordinates {
+    color: #6c757d;
+    font-size: 0.9rem;
+    margin: 0.25rem 0;
+}
+
+.timestamp {
+    color: #6c757d;
+    font-size: 0.9rem;
+    margin: 0.25rem 0;
+}
+
+/* Card principal do IQA */
+.aqi-main {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.aqi-card {
+    display: inline-block;
+    padding: 2rem;
+    border-radius: 15px;
+    color: white;
+    min-width: 200px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.aqi-value {
+    font-size: 3rem;
+    font-weight: bold;
+    line-height: 1;
+}
+
+.aqi-label {
+    font-size: 0.9rem;
+    opacity: 0.9;
+    margin: 0.5rem 0;
+}
+
+.aqi-status {
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+/* Classes de cores para IQA */
+.aqi-card.good { background: linear-gradient(135deg, #28a745, #20c997); }
+.aqi-card.fair { background: linear-gradient(135deg, #17a2b8, #20c997); }
+.aqi-card.moderate { background: linear-gradient(135deg, #ffc107, #fd7e14); }
+.aqi-card.poor { background: linear-gradient(135deg, #fd7e14, #dc3545); }
+.aqi-card.very-poor { background: linear-gradient(135deg, #dc3545, #6f42c1); }
+.aqi-card.hazardous { background: linear-gradient(135deg, #6f42c1, #495057); }
+.aqi-card.unknown { background: linear-gradient(135deg, #6c757d, #495057); }
+
+/* Poluente principal */
+.main-pollutant {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.main-pollutant h4 {
+    color: #333;
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+}
+
+.pollutant-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 8px;
+}
+
+.pollutant-name {
+    font-weight: 600;
+    color: #495057;
+    font-size: 1.1rem;
+}
+
+.pollutant-value {
+    font-weight: 600;
+    color: #dc3545;
+    font-size: 1.2rem;
+}
+
+/* Recomendações de saúde */
+.health-advice {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.health-advice h4 {
+    color: #333;
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+}
+
+.advice-content {
+    padding: 1rem;
+    border-radius: 8px;
+    border-left: 4px solid #667eea;
+}
+
+.advice-content.good { 
+    background: #d4edda; 
+    border-left-color: #28a745; 
+    color: #155724;
+}
+
+.advice-content.fair { 
+    background: #d1ecf1; 
+    border-left-color: #17a2b8; 
+    color: #0c5460;
+}
+
+.advice-content.moderate { 
+    background: #fff3cd; 
+    border-left-color: #ffc107; 
+    color: #856404;
+}
+
+.advice-content.poor { 
+    background: #f8d7da; 
+    border-left-color: #dc3545; 
+    color: #721c24;
+}
+
+.advice-content.very-poor { 
+    background: #f8d7da; 
+    border-left-color: #dc3545; 
+    color: #721c24;
+}
+
+.advice-content.hazardous { 
+    background: #e2e3e5; 
+    border-left-color: #6c757d; 
+    color: #383d41;
+}
+
+.advice-content p {
+    margin: 0.5rem 0;
+}
+
+.advice-content p:first-child {
+    margin-top: 0;
+}
+
+.advice-content p:last-child {
+    margin-bottom: 0;
+}
+
+/* Grid de poluentes detalhados */
+.detailed-pollutants {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.detailed-pollutants h4 {
+    color: #333;
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+}
+
+.pollutants-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+}
+
+.pollutant-card {
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 8px;
+    text-align: center;
+    border: 1px solid #e9ecef;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.pollutant-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.pollutant-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.pollutant-symbol {
+    font-weight: bold;
+    color: #495057;
+    font-size: 1.1rem;
+}
+
+.pollutant-concentration {
+    font-weight: 600;
+    color: #dc3545;
+    font-size: 1.2rem;
+}
+
+.pollutant-unit {
+    font-size: 0.8rem;
+    color: #6c757d;
+    margin-bottom: 0.5rem;
+}
+
+.pollutant-desc {
+    font-size: 0.85rem;
+    color: #6c757d;
+    line-height: 1.3;
+}
+
+/* Informações adicionais */
+.additional-info {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.uv-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 8px;
+}
+
+.uv-label {
+    font-weight: 600;
+    color: #495057;
+}
+
+.uv-value {
+    font-weight: 600;
+    font-size: 1.2rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    color: white;
+}
+
+.uv-low { background: #28a745; }
+.uv-moderate { background: #ffc107; color: #212529; }
+.uv-high { background: #fd7e14; }
+.uv-very-high { background: #dc3545; }
+.uv-extreme { background: #6f42c1; }
+
+/* Fonte de dados */
+.data-source {
+    text-align: center;
+    padding-top: 1rem;
+    border-top: 1px solid #e9ecef;
+}
+
+.data-source p {
+    margin: 0;
+    color: #6c757d;
+}
+
+/* Responsividade para resultados */
+@media (max-width: 768px) {
+    .pollutants-grid {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 0.75rem;
+    }
+    
+    .aqi-card {
+        min-width: 150px;
+        padding: 1.5rem;
+    }
+    
+    .aqi-value {
+        font-size: 2.5rem;
+    }
+    
+    .pollutant-info {
+        flex-direction: column;
+        gap: 0.5rem;
+        text-align: center;
+    }
+    
+    .uv-info {
+        flex-direction: column;
+        gap: 0.5rem;
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .pollutants-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+    
+    .air-quality-results {
+        padding: 0;
+    }
+    
+    .location-header h3 {
+        font-size: 1.25rem;
+    }
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 1rem;
+    color: white;
+    opacity: 0.8;
+    font-size: 0.9rem;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+    
+    header h1 {
+        font-size: 2rem;
+    }
+    
+    main {
+        padding: 1.5rem;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .btn-primary,
+    .btn-secondary {
+        min-width: auto;
+    }
+}
+
+@media (max-width: 480px) {
+    header h1 {
+        font-size: 1.75rem;
+    }
+    
+    header p {
+        font-size: 1rem;
+    }
+    
+    main {
+        padding: 1rem;
+    }
+}
+
+/* Animações */
+.form-group {
+    animation: fadeInUp 0.5s ease forwards;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Estados de validação visual */
+.form-group.valid input,
+.form-group.valid select {
+    border-color: #28a745;
+}
+
+.form-group.valid input:focus,
+.form-group.valid select:focus {
+    box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
+}
+
+/* Estilo para campos obrigatórios */
+.form-group label[for="city"]::after,
+.form-group label[for="state"]::after {
+    content: " *";
+    color: #e74c3c;
+}

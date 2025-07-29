@@ -1,0 +1,209 @@
+name: Air Quality App CI/CD
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  # Job para validação e testes
+  test:
+    name: Test and Validate
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout código
+      uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+    
+    - name: Instalar dependências
+      run: |
+        npm ci
+        npx playwright install --with-deps chromium
+    
+    - name: Validar estrutura de arquivos
+      run: |
+        echo "Verificando estrutura da aplicação..."
+        test -f air-quality-app/index.html || (echo "❌ index.html não encontrado" && exit 1)
+        test -f air-quality-app/styles.css || (echo "❌ styles.css não encontrado" && exit 1)
+        test -f air-quality-app/script.js || (echo "❌ script.js não encontrado" && exit 1)
+        echo "✅ Estrutura de arquivos validada"
+    
+    - name: Validar HTML
+      run: |
+        echo "Validando HTML..."
+        npx html-validate air-quality-app/index.html || echo "⚠️ Avisos de HTML encontrados"
+    
+    - name: Validar CSS
+      run: |
+        echo "Validando CSS..."
+        npx stylelint air-quality-app/styles.css --config-basedir . || echo "⚠️ Avisos de CSS encontrados"
+    
+    - name: Validar JavaScript
+      run: |
+        echo "Validando JavaScript..."
+        npx eslint air-quality-app/script.js --no-eslintrc --env browser,es6 || echo "⚠️ Avisos de JavaScript encontrados"
+    
+    - name: Iniciar servidor de teste
+      run: |
+        cd air-quality-app
+        python3 -m http.server 8080 &
+        sleep 3
+        echo "Servidor iniciado em http://localhost:8080"
+    
+    - name: Testes de funcionalidade básica
+      run: |
+        echo "Testando se a aplicação carrega..."
+        curl -f http://localhost:8080 > /dev/null || (echo "❌ Aplicação não carrega" && exit 1)
+        echo "✅ Aplicação carrega corretamente"
+    
+    - name: Testes Playwright (se disponível)
+      run: |
+        if [ -f "playwright-tests.spec.js" ]; then
+          echo "Executando testes Playwright..."
+          npx playwright test playwright-tests.spec.js --reporter=html
+        else
+          echo "ℹ️ Testes Playwright não encontrados, pulando..."
+        fi
+      continue-on-error: true
+    
+    - name: Upload dos artefatos de teste
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: test-results
+        path: |
+          playwright-report/
+          test-results/
+        retention-days: 7
+
+  # Job para build da aplicação
+  build:
+    name: Build Application
+    runs-on: ubuntu-latest
+    needs: test
+    
+    steps:
+    - name: Checkout código
+      uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+    
+    - name: Preparar build
+      run: |
+        echo "Preparando aplicação para produção..."
+        mkdir -p dist
+        cp -r air-quality-app/* dist/
+    
+    - name: Otimizar recursos (opcional)
+      run: |
+        echo "Otimizando CSS e JavaScript..."
+        # Minificar CSS se necessário
+        if command -v npx &> /dev/null; then
+          npx csso dist/styles.css --output dist/styles.min.css || echo "⚠️ Minificação CSS falhou"
+          npx terser dist/script.js --output dist/script.min.js || echo "⚠️ Minificação JS falhou"
+        fi
+    
+    - name: Gerar README para distribuição
+      run: |
+        cat > dist/README.md << 'EOF'
+        # Verificador da Qualidade do Ar
+        
+        Aplicação web para consulta da qualidade do ar em tempo real.
+        
+        ## 🚀 Como usar
+        1. Abra o arquivo `index.html` em qualquer navegador
+        2. Preencha cidade, estado e país
+        3. Clique em "Consultar Qualidade do Ar"
+        
+        ## 🌐 Versão online
+        Esta aplicação está disponível em: https://lucasboni29.github.io/sinquia_evertec_workshop/
+        
+        ## 📋 Funcionalidades
+        - ✅ Formulário com validação
+        - ✅ Integração com APIs de geocodificação e qualidade do ar
+        - ✅ Interface responsiva
+        - ✅ Recomendações de saúde baseadas no IQA
+        
+        ---
+        **Sinquia Evertec Workshop - $(date)**
+        EOF
+    
+    - name: Upload do build
+      uses: actions/upload-artifact@v4
+      with:
+        name: air-quality-app-build
+        path: dist/
+        retention-days: 30
+
+  # Job para deploy (apenas na branch main)
+  deploy:
+    name: Deploy to GitHub Pages
+    runs-on: ubuntu-latest
+    needs: [test, build]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    
+    steps:
+    - name: Checkout código
+      uses: actions/checkout@v4
+    
+    - name: Download do build
+      uses: actions/download-artifact@v4
+      with:
+        name: air-quality-app-build
+        path: ./deploy
+    
+    - name: Setup Pages
+      uses: actions/configure-pages@v4
+    
+    - name: Upload para Pages
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: './deploy'
+    
+    - name: Deploy para GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4
+
+  # Job para notificação de status
+  notify:
+    name: Notify Status
+    runs-on: ubuntu-latest
+    needs: [test, build, deploy]
+    if: always()
+    
+    steps:
+    - name: Relatório de status
+      run: |
+        echo "📊 Relatório do Pipeline:"
+        echo "Test Job: ${{ needs.test.result }}"
+        echo "Build Job: ${{ needs.build.result }}"
+        echo "Deploy Job: ${{ needs.deploy.result }}"
+        
+        if [ "${{ needs.test.result }}" = "success" ] && [ "${{ needs.build.result }}" = "success" ]; then
+          echo "✅ Pipeline executado com sucesso!"
+          if [ "${{ needs.deploy.result }}" = "success" ]; then
+            echo "🚀 Aplicação deployada com sucesso!"
+            echo "🌐 URL: https://lucasboni29.github.io/sinquia_evertec_workshop/"
+          fi
+        else
+          echo "❌ Pipeline falhou. Verifique os logs acima."
+        fi
