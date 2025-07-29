@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificador da Qualidade do Ar</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌍 Verificador da Qualidade do Ar</h1>
+            <p>Consulte a qualidade do ar em sua cidade</p>
+        </header>
+
+        <main>
+            <form id="locationForm" class="location-form">
+                <div class="form-group">
+                    <label for="city">Cidade *</label>
+                    <input 
+                        type="text" 
+                        id="city" 
+                        name="city" 
+                        required 
+                        placeholder="Ex: São Paulo"
+                        maxlength="100"
+                    >
+                    <span class="error-message" id="cityError"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="state">Estado/Província/Região *</label>
+                    <input 
+                        type="text" 
+                        id="state" 
+                        name="state" 
+                        required 
+                        placeholder="Ex: SP"
+                        maxlength="100"
+                    >
+                    <span class="error-message" id="stateError"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="country">País</label>
+                    <select id="country" name="country">
+                        <option value="BR">Brasil</option>
+                        <option value="US">Estados Unidos</option>
+                        <option value="CA">Canadá</option>
+                        <option value="MX">México</option>
+                        <option value="AR">Argentina</option>
+                        <option value="CL">Chile</option>
+                        <option value="CO">Colômbia</option>
+                        <option value="PE">Peru</option>
+                        <option value="UY">Uruguai</option>
+                        <option value="PY">Paraguai</option>
+                        <option value="BO">Bolívia</option>
+                        <option value="VE">Venezuela</option>
+                        <option value="EC">Equador</option>
+                        <option value="GY">Guiana</option>
+                        <option value="SR">Suriname</option>
+                        <option value="GF">Guiana Francesa</option>
+                        <option value="OTHER" data-custom="true">Outro...</option>
+                    </select>
+                    <span class="error-message" id="countryError"></span>
+                </div>
+
+                <div class="form-group" id="customCountryGroup" style="display: none;">
+                    <label for="customCountry">Digite o país</label>
+                    <input 
+                        type="text" 
+                        id="customCountry" 
+                        name="customCountry" 
+                        placeholder="Ex: França"
+                        maxlength="100"
+                    >
+                    <span class="error-message" id="customCountryError"></span>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">
+                        🔍 Consultar Qualidade do Ar
+                    </button>
+                    <button type="reset" class="btn-secondary">
+                        🔄 Limpar Formulário
+                    </button>
+                </div>
+            </form>
+
+            <div id="loadingIndicator" class="loading" style="display: none;">
+                <div class="spinner"></div>
+                <p id="loadingText">Buscando dados da qualidade do ar...</p>
+                <div class="loading-steps">
+                    <div class="step" id="step1">🌍 Localizando coordenadas...</div>
+                    <div class="step" id="step2">🌤️ Consultando qualidade do ar...</div>
+                    <div class="step" id="step3">📊 Processando dados...</div>
+                </div>
+            </div>
+
+            <div id="results" class="results" style="display: none;">
+                <!-- Resultados serão exibidos aqui -->
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2025 Sinquia Evertec Workshop - Verificador da Qualidade do Ar</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

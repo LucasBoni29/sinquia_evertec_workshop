@@ -1,0 +1,134 @@
+name: Quick Validation
+
+on:
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'air-quality-app/**'
+      - '.github/workflows/**'
+
+jobs:
+  quick-check:
+    name: Quick Validation Check
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout código
+      uses: actions/checkout@v4
+    
+    - name: Verificar arquivos essenciais
+      run: |
+        echo "🔍 Verificando arquivos essenciais..."
+        
+        # Verificar se arquivos principais existem
+        files=("air-quality-app/index.html" "air-quality-app/styles.css" "air-quality-app/script.js")
+        for file in "${files[@]}"; do
+          if [ -f "$file" ]; then
+            echo "✅ $file encontrado"
+          else
+            echo "❌ $file não encontrado"
+            exit 1
+          fi
+        done
+    
+    - name: Verificar sintaxe HTML
+      run: |
+        echo "🔍 Verificando sintaxe HTML básica..."
+        if grep -q "<!DOCTYPE html>" air-quality-app/index.html; then
+          echo "✅ DOCTYPE correto"
+        else
+          echo "⚠️ DOCTYPE não encontrado ou incorreto"
+        fi
+        
+        if grep -q "<title>" air-quality-app/index.html; then
+          echo "✅ Título presente"
+        else
+          echo "⚠️ Título não encontrado"
+        fi
+    
+    - name: Verificar estrutura CSS
+      run: |
+        echo "🔍 Verificando estrutura CSS básica..."
+        if [ -s "air-quality-app/styles.css" ]; then
+          echo "✅ Arquivo CSS não está vazio"
+        else
+          echo "⚠️ Arquivo CSS está vazio"
+        fi
+    
+    - name: Verificar estrutura JavaScript
+      run: |
+        echo "🔍 Verificando estrutura JavaScript básica..."
+        if [ -s "air-quality-app/script.js" ]; then
+          echo "✅ Arquivo JavaScript não está vazio"
+        else
+          echo "⚠️ Arquivo JavaScript está vazio"
+        fi
+        
+        # Verificar se contém funções básicas
+        if grep -q "class\|function" air-quality-app/script.js; then
+          echo "✅ Contém funções ou classes"
+        else
+          echo "⚠️ Nenhuma função ou classe encontrada"
+        fi
+    
+    - name: Teste de carregamento rápido
+      run: |
+        echo "🚀 Testando carregamento da aplicação..."
+        cd air-quality-app
+        python3 -m http.server 3000 &
+        SERVER_PID=$!
+        sleep 2
+        
+        # Teste básico de conectividade
+        if curl -f -s http://localhost:3000 > /dev/null; then
+          echo "✅ Aplicação carrega corretamente"
+        else
+          echo "❌ Erro ao carregar aplicação"
+          kill $SERVER_PID
+          exit 1
+        fi
+        
+        kill $SERVER_PID
+    
+    - name: Comentar no PR
+      uses: actions/github-script@v7
+      if: github.event_name == 'pull_request'
+      with:
+        script: |
+          const { data: comments } = await github.rest.issues.listComments({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            issue_number: context.issue.number,
+          });
+          
+          const botComment = comments.find(comment => 
+            comment.user.type === 'Bot' && 
+            comment.body.includes('🤖 Validação Rápida')
+          );
+          
+          const body = `🤖 **Validação Rápida Concluída**
+          
+          ✅ Estrutura de arquivos verificada
+          ✅ Sintaxe básica validada  
+          ✅ Aplicação carrega corretamente
+          
+          A aplicação está pronta para revisão! 🚀
+          
+          ---
+          *Validação automática executada em ${new Date().toLocaleString('pt-BR')}*`;
+          
+          if (botComment) {
+            await github.rest.issues.updateComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              comment_id: botComment.id,
+              body: body
+            });
+          } else {
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: body
+            });
+          }
